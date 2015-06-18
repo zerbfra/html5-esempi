@@ -1,0 +1,87 @@
+<!doctype html> 
+<html> 
+<head>
+  <title>Esempio implementazione tag video</title> 
+  <script>
+  
+    var video;
+     
+   play = function(){
+      video.play();
+    } 
+    
+    pause = function(){
+      video.pause();
+    } 
+    cambiaVolume = function(evento){
+      video.volume = evento.target.value;
+    } 
+    
+
+	faster = function(){ 
+  		video.playbackRate = 2.0;
+	}
+	
+		
+	slower = function(){ 
+  		video.playbackRate = 0.5;
+	}
+	
+	normal = function(){ 
+  		video.playbackRate = 1;
+	}
+	
+
+	begin = function(){
+  		video.currentTime = 0;
+	}
+	
+	
+	write = function(intervalli){ 
+  		var testo = ""; 
+  		for(var i=0; i < intervalli.length; i++){
+    		testo +="\tda: " + intervalli.start(i) + " a: " + Math.round(intervalli.end(i)) + " secondi"
+  		}
+  	return testo;
+	}
+	 
+	info = function(){
+  		var caricato  = video.buffered; 
+  		var riprodotto    = video.played; 
+  		var ricercabile = video.seekable; 
+  		alert(	"Alcune informazioni sul video \n" +
+    			"Caricato \n" + write(caricato) + "\n" + 
+    			"Riprodotto \n" + write(riprodotto) 
+    
+  		);
+	}
+
+
+    window.addEventListener('load',function(e){
+      video = document.querySelector('video');
+    }) 
+  </script>
+</head> 
+<body>
+<h1>Esempio implementazione tag video</h1>
+  <menu type="toolbar">
+    <button type="button" onclick="play()" > Play </button> 
+    <button type="button" onclick="pause()"> Pause </button> 
+    <button type="button" onclick="faster()"> 2X </button> 
+    <button type="button" onclick="normal()"> 1X </button> 
+    <button type="button" onclick="slower()"> 1/2X </button> 
+    <button type="button" onclick="begin()"> Inizio </button>
+    <button type="button" onclick="info()"> Info </button>
+
+
+    
+    <label> Volume: </label> 
+    <input type="range" min="0.0" max="1.0" step="0.1" value="0.5" oninput="cambiaVolume(event)">
+  </menu> 
+  <video controls>
+    <source src="src/trailer.mp4" type="video/mp4" > 
+    <source src="src/trailer.ogg" type="video/ogg" > 
+    <source src="src/trailer.webm" type="video/webm">
+  </video> 
+</body>
+</html>

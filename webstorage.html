@@ -1,0 +1,30 @@
+<!doctype html> 
+<html> 
+	<head>
+		<title>Esempio webstorage</title> 
+		<script>
+  			
+  			save = function(dati_form){ 
+  				localStorage.dato = dati_form; 
+  				alert("Memorizzazione effettuata");
+			};
+ 
+			get = function(dati_form){ 
+  				if(confirm("Recuperare dato?"))
+    				dati_form.value = localStorage.dato;
+  			};
+  
+  </script>
+  
+</head> 
+<body>
+	
+	<h1>Esempio di webstorage</h1>
+	<form name="form"> 
+		<textarea name="data" required autofocus></textarea> 
+		<br>
+		<button type="button" onclick="save(this.form.elements['data'].value);">Salva</button>
+		<button type="button" onclick="get(this.form.elements['data']);">Recupera</button>  
+	</form>
+</body> 
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Esempio di Web Worker</title>
+
+<style>
+	#status {
+  		height: 200px;
+  		max-height: 200px;
+  		width: 300px;
+  		border: thin solid #aaa;
+  		overflow-y: scroll;
+	}
+
+
+</style>
+</head>
+
+<body>
+
+    <header>
+    	<h1>Web Worker</h1>
+    </header>
+
+  	<div><input type="button" value="start worker" id="toggleWorker" /></div>
+  	<h2>Messaggi ricevuti dal worker:</h2>
+  	<div id="status"></div>
+  	<script src="worker-main.js"></script>
+
+</body>
+</html>

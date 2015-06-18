@@ -1,0 +1,61 @@
+<!doctype html> 
+<html> 
+<head>
+  <title> WebSocket: Echo Server </title> 
+  
+  <style>
+	#status {
+  		height: 200px;
+  		max-height: 200px;
+  		width: 300px;
+  		border: thin solid #aaa;
+  		overflow-y: scroll;
+	}
+  </style>
+
+</head>
+<body> 
+<h1>WebSocket: <i>echo.websocket.org</i></h1>
+<form name="form"> 
+	<p>Digita testo da inviare:</p>
+	<textarea name="data" required autofocus></textarea> 
+	<br>
+	<button type="button" onclick="start_socket(this.form.elements['data'].value);">Avvia</button>
+</form>
+
+<p>Esecuzione:</p>
+<div id="status"></div>
+	
+<script> 
+	var statusDiv = document.getElementById('status');
+	
+	append = function(text){
+  		var currentStatus = statusDiv.innerHTML;
+ 	 	statusDiv.innerHTML = "<p>" + text + "</p>" + currentStatus;
+ 	 }
+  
+	start_socket = function(message){
+    	var echo_service = new WebSocket('ws://echo.websocket.org'); 
+    
+    	echo_service.onmessage = function(event){
+      		append("<b>Messaggio ricevuto: </b>"+event.data) 
+      		echo_service.close();
+    	} 
+    
+    	echo_service.onopen = function(){
+      		append("Connessione effettuata") 
+      		echo_service.send(message);
+    	} 
+    	
+    	echo_service.onclose = function(){
+      		append("Connessione chiusa");
+    	} 
+    	
+    	echo_service.onerror = function(){
+      		append("Errore nella connessione");
+    	}
+  	}
+</script> 
+
+</body> 
+</html>

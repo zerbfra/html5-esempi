@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<head>
+<style type="text/css">a {text-decoration: none; color: red; font-size: 11px; margin-right:40%; float:right;}</style>
+<script>
+	
+	var db;
+	var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
+	var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction;
+
+
+	function init() {
+		
+  		var openRequest = indexedDB.open("databased");
+  	
+  		openRequest.onsuccess = function(e) {
+			db = e.target.result;
+      		db.onerror = function(event) {
+        		alert("Errore database: " + event.target.errorCode);
+        		console.dir(event.target);
+			};
+      	
+      		displayNotes();
+		}
+  		
+  		openRequest.error = function(){console.log("Errore");}
+  		
+  		
+
+		openRequest.onupgradeneeded = function(e) {
+		
+   			console.log("Creo la struttura del DB...");
+      		var thisDb = e.target.result;
+
+      		if(!thisDb.objectStoreNames.contains("note")) {
+        		console.log("Devo creare l'ObjectStore!");
+        		
+        		 var objectStore = thisDb.createObjectStore("note", { keyPath: "id", autoIncrement:true });  
+        		objectStore.createIndex("title", "title", { unique: false });
+        	}
+    	}
+
+	}
+
+
+	function addNote() {
+	
+		var transaction = db.transaction(["note"], "readwrite");  
+    	transaction.onerror = function(event) {
+			console.dir(event);
+      	};
+ 
+      	var objectStore = transaction.objectStore("note");
+      	
+      	var rnd = Math.floor(Math.random()*1000);
+      	
+		var request = objectStore.add( {title:"Nota "+ rnd, body:"Contenuto della nota " + rnd } );
+          
+        request.onsuccess = function(event) {
+        	console.log("Dato inserito");
+      	};
+ 
+ 	}
+ 	
+ 	function delNote(id) {
+ 	
+ 		var transaction = db.transaction(["note"], "readwrite");  
+    	transaction.onerror = function(event) {
+			console.dir(event);
+      	};
+ 
+      	var objectStore = transaction.objectStore("note");
+      	
+      	
+		var request = objectStore.delete(id);
+          
+        request.onsuccess = function(event) {
+        	console.log("Cancellata nota "+id);
+      	};
+ 
+ 	}
+ 		
+ 	 
+    function displayNotes() {
+		
+		var div = document.getElementById('list');
+      	var transaction = db.transaction(["note"], "readonly");  
+
+		transaction.onerror = function(event) {
+        	console.dir(event);
+      	};
+      	
+		var objectStore = transaction.objectStore("note");
+		
+		objectStore.openCursor().onsuccess = function(event) {  
+			
+			var cursor = event.target.result;  
+			if (cursor) {  
+				console.log("Stampo nota: "+cursor.value.id);
+				div.innerHTML = div.innerHTML + "<b>" + cursor.value.title + ":</b> " + cursor.value.body + 
+				"<a onclick='delNote("+cursor.value.id+")'>[Cancella]</a><hr>";
+				cursor.continue();  
+			} else console.log("Fine cursore");  
+
+		};  
+	}
+ 
+
+</script>
+</head>
+ 
+<body onload="init()">
+  <h1>Esempio di IndexedDB</h1>
+  <p>
+  	<div id="list"></div>
+    <button onclick="addNote()">Aggiungi</button>
+  </p>
+</body>
+</html>

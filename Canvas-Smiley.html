@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Esempio di canvas: Smiley</title>
+</head>
+<body>
+	<canvas id="smiley" width="600" height="600">
+		Canvas non supportati dal browser in uso.
+	</canvas>
+
+	<script type="text/javascript">
+	
+	
+		// funzione di selezione requestAnimation per la compatibilità tra browser
+    	window.requestAnimFrame = (function(){
+      		return  window.requestAnimationFrame       || 
+              		window.webkitRequestAnimationFrame || 
+              		window.mozRequestAnimationFrame    || 
+              		window.oRequestAnimationFrame      || 
+              		window.msRequestAnimationFrame
+      
+   		 })();
+		
+	
+		var canvas = document.getElementById('smiley');
+		var ctx = canvas.getContext('2d');
+		animate();
+
+		
+		function draw() {
+
+			
+			ctx.beginPath();
+			ctx.arc(150, 150, 100, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.lineWidth = 5;
+			ctx.fillStyle = "rgb(255, 255, 0)";
+			ctx.stroke();
+			ctx.fill();
+ 
+			// Occhio sinistro
+			ctx.beginPath();
+			ctx.arc(120, 130, 20, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.fillStyle = "rgb(255, 255, 255)";
+			ctx.stroke();
+			ctx.fill();
+ 
+			// Pupilla sinistra
+			ctx.beginPath();
+			ctx.arc(120, 130, 4, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.fillStyle = "rgb(0, 0, 255)";
+			ctx.stroke();
+			ctx.fill();
+
+			// Occhio destro
+			ctx.beginPath();
+			ctx.arc(180, 130, 20, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.fillStyle = "rgb(255, 255, 255)";
+			ctx.stroke();
+			ctx.fill();
+
+			// Pupilla destra 
+			ctx.beginPath();
+			ctx.arc(180, 130, 4, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.fillStyle = "rgb(0, 0, 255)";
+			ctx.stroke();
+			ctx.fill();
+
+			// Bocca
+ 			ctx.beginPath();
+			ctx.arc(150, 165, 60, 0, 1 * Math.PI, false);
+			ctx.closePath();
+			ctx.fillStyle = "rgb(255, 0, 0)";
+			ctx.stroke();
+			ctx.fill();
+		}	
+		
+		
+		function scale() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.scale(2,2);
+			draw();
+		}
+		
+		
+		function rotate() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.rotate(Math.PI / 12);
+			draw();
+		}
+		
+		function translate() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.translate(300,300);
+			draw();
+		}
+		
+		function alpha() {
+			ctx.globalAlpha = 0.5;
+			draw();
+		}
+		
+		function shadow() {
+			ctx.shadowColor = '#003300';
+			ctx.shadowOffsetX = 5; 
+			ctx.shadowOffsetY = 5; 
+			ctx.shadowBlur = 10; 
+			draw();
+		}
+		
+		function transform() {
+			var sy = 0.75;
+			var sx = 0.5;
+			ctx.transform(1 ,sy, sx, 1, 0, 0);
+			draw();
+		}
+				
+		function background() {
+			var imageObj = new Image();
+	      	imageObj.src = 'bg.jpg';	
+      		
+      		imageObj.onload = function() {
+        		ctx.drawImage(imageObj, 0, 0);
+        		draw();
+      		};
+		
+		}
+		
+		function text() {	
+			draw();
+			ctx.font = "70px Comic Sans MS";
+			ctx.fillStyle = "rgb(0, 0, 0)";
+			
+			ctx.strokeText("Ciao!",20,320);
+			ctx.fillText("Sono uno smiley",20,390);			
+		}
+		
+		
+		function action() {	
+			// Pulisco il "frame" precedente
+			ctx.clearRect(0, 0, canvas.width, canvas.height);		
+  			
+  			// Traslo il canvas
+  			ctx.translate(canvas.width/4, canvas.width/4);
+	
+  			// Effettuo la rotazione
+ 		 	ctx.rotate(Math.PI / 180);
+    		
+    		// Traslo nuovamente
+ 		 	ctx.translate(-canvas.width/4, -canvas.width/4);
+	
+			// Disegno il nuovo frame
+			draw();
+		}
+		
+		
+
+		
+		function animate() {
+			requestAnimFrame(animate);
+			action();     
+       		
+       	}   
+		
+		function animate2() {
+			var fps = 30;
+    		setInterval(action,fps);
+		}
+
+		
+		
+		function pixel() {
+			draw();
+			var dati_immagine = ctx.getImageData(0,0,ctx.canvas.width, ctx.canvas.height);
+ 
+			var array_dati_immagine = dati_immagine.data; 
+			for(var i = 0; i < array_dati_immagine.length; i +=4 ){
+  				array_dati_immagine[i ] = Math.round(Math.random() * 255); 
+ 				array_dati_immagine[i+1] = Math.round(Math.random() * 255); 
+  				array_dati_immagine[i+2] = Math.round(Math.random() * 255);
+			} 
+			
+			dati_immagine.data = array_dati_immagine; 
+			ctx.putImageData(dati_immagine, 0,0);
+		}
+
+		function url() {
+					var dataUrl = canvas.toDataURL();
+					window.open(dataUrl, "toDataURL() image", "width=600, height=600");
+		}
+
+		
+		
+	
+		
+	</script>
+
+</body>
+</html>
